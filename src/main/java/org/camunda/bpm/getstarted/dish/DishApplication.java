@@ -12,10 +12,25 @@
  */
 package org.camunda.bpm.getstarted.dish;
 
+import org.camunda.bpm.application.PostDeploy;
 import org.camunda.bpm.application.ProcessApplication;
 import org.camunda.bpm.application.impl.ServletProcessApplication;
+import org.camunda.bpm.engine.DecisionService;
+import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.variable.VariableMap;
+import org.camunda.bpm.engine.variable.Variables;
 
 @ProcessApplication("Dish App DMN")
 public class DishApplication extends ServletProcessApplication {
-  //empty implementation
+
+  @PostDeploy
+  public void evaluateDecisionTable(ProcessEngine processEngine) {
+
+    DecisionService decisionService = processEngine.getDecisionService();
+
+    VariableMap variables = Variables.createVariables().putValue("season", "Summer");
+
+    decisionService.evaluateDecisionTableByKey("dish", variables);
+  }
+
 }
